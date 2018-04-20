@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import io.github.rajdeep1008.apkwizard.R
 import io.github.rajdeep1008.apkwizard.models.Apk
@@ -24,12 +25,14 @@ class ApkListAdapter(var apkList: ArrayList<Apk>?, val context: Context) : Recyc
     }
 
     override fun onBindViewHolder(holder: ApkListViewHolder?, position: Int) {
-        holder?.mLabelTextView?.text = apkList?.get(position)?.label
+        holder?.mIconImageView?.setImageDrawable(context.packageManager.getApplicationIcon(apkList?.get(position)?.appInfo))
+        holder?.mLabelTextView?.text = context.packageManager.getApplicationLabel(apkList?.get(position)?.appInfo).toString()
         holder?.mPackageTextView?.text = apkList?.get(position)?.packageName
     }
 
     class ApkListViewHolder(val view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
 
+        val mIconImageView: ImageView = view.find(R.id.apk_icon_iv)
         val mLabelTextView: TextView = view.find(R.id.apk_label_tv)
         val mPackageTextView: TextView = view.find(R.id.apk_package_tv)
 

@@ -41,18 +41,16 @@ class MainActivity : AppCompatActivity() {
             allPackages.forEach {
                 val applicationInfo: ApplicationInfo = it.applicationInfo
 
-                // Non system apps
                 if ((applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0) {
                     val userApk = Apk(
-                            packageManager.getApplicationLabel(applicationInfo).toString(),
+                            applicationInfo,
                             it.packageName,
                             it.versionName,
                             false)
-
                     userApkList.add(userApk)
                 } else {
                     val systemApk = Apk(
-                            packageManager.getApplicationLabel(applicationInfo).toString(),
+                            applicationInfo,
                             it.packageName,
                             it.versionName,
                             true)
