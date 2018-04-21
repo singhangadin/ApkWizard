@@ -8,5 +8,7 @@
         android:id="@+id/apk_list_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:listitem="@layout/apk_item"/>
+        android:layout_marginTop="8dp"
+        tools:listitem="@layout/apk_item" />
+
 </RelativeLayout>

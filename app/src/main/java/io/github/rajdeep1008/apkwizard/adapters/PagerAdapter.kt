@@ -14,9 +14,9 @@ import io.github.rajdeep1008.apkwizard.models.Apk
 class PagerAdapter(fm: FragmentManager, private val context: Context, val userApkList: List<Apk>,val systemApkList: List<Apk>) : FragmentStatePagerAdapter(fm) {
 
     val tabNames = arrayOf("Installed", "System", "Extracted")
-    var mContext: Context? = null
-    var mUserApkList: List<Apk>? = null
-    var mSystemApkList: List<Apk>? = null
+    var mContext: Context
+    var mUserApkList: List<Apk>
+    var mSystemApkList: List<Apk>
 
     init {
         mContext = context

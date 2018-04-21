@@ -9,6 +9,8 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
 import io.github.rajdeep1008.apkwizard.R
@@ -20,8 +22,10 @@ import org.jetbrains.anko.uiThread
 
 class MainActivity : AppCompatActivity() {
 
-    private var mPagerAdapter: PagerAdapter? = null
-    private var mViewPager: ViewPager? = null
+    private lateinit var toolbar: Toolbar
+    private lateinit var progressBar: ProgressBar
+    private lateinit var tabLayout: TabLayout
+    private lateinit var mViewPager: ViewPager
 
     private val userApkList = mutableListOf<Apk>()
     private val systemApkList = mutableListOf<Apk>()
@@ -30,10 +34,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val toolbar: Toolbar = find(R.id.toolbar)
+        toolbar = find(R.id.toolbar)
+        progressBar = find(R.id.progress)
+        mViewPager = find(R.id.container)
+        tabLayout = find(R.id.tab_bar)
         setSupportActionBar(toolbar)
 
-        val progressBar: ProgressBar = find(R.id.progress)
+        setupViewPager(userApkList, systemApkList)
 
         doAsync {
             val allPackages: List<PackageInfo> = packageManager.getInstalledPackages(PackageManager.GET_META_DATA)
@@ -68,12 +75,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun setupViewPager(userApkList: List<Apk>, systemApkList: List<Apk>) {
-        mPagerAdapter = PagerAdapter(supportFragmentManager, this, userApkList, systemApkList)
-        mViewPager = findViewById(R.id.container)
-        mViewPager!!.adapter = mPagerAdapter
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
 
-        val tabLayout = findViewById(R.id.tab_bar) as TabLayout
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return super.onOptionsItemSelected(item)
+    }
+
+    fun setupViewPager(userApkList: List<Apk>, systemApkList: List<Apk>) {
+        mViewPager.adapter = PagerAdapter(supportFragmentManager, this, userApkList, systemApkList)
         tabLayout.setupWithViewPager(mViewPager)
     }
 }

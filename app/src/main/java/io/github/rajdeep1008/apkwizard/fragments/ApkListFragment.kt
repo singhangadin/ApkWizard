@@ -16,7 +16,7 @@ import org.jetbrains.anko.find
 
 class ApkListFragment : Fragment() {
 
-    var apkList: ArrayList<Apk>? = null
+    private lateinit var apkList: ArrayList<Apk>
 
     companion object {
         val APK_ARG: String = "apk-list"
@@ -34,6 +34,8 @@ class ApkListFragment : Fragment() {
         super.onCreate(savedInstanceState)
         if (arguments.getParcelableArrayList<Apk>(APK_ARG) != null) {
             apkList = arguments.getParcelableArrayList(APK_ARG)
+        } else {
+            apkList = ArrayList()
         }
     }
 
