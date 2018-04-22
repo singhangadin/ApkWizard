@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
                 if ((applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0) {
                     val userApk = Apk(
                             applicationInfo,
+                            packageManager.getApplicationLabel(applicationInfo).toString(),
                             it.packageName,
                             it.versionName,
                             false)
@@ -61,6 +62,7 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     val systemApk = Apk(
                             applicationInfo,
+                            packageManager.getApplicationLabel(applicationInfo).toString(),
                             it.packageName,
                             it.versionName,
                             true)

@@ -8,8 +8,11 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import io.github.rajdeep1008.apkwizard.activities.MainActivity
+import io.github.rajdeep1008.apkwizard.models.Apk
+import org.apache.commons.io.FileUtils
 import java.io.File
 
 /**
@@ -56,11 +59,31 @@ class Utilities {
             return file
         }
 
-        fun makeAppDir(){
+        fun makeAppDir() {
             val file = getAppFolder()
-            if(file != null && !file.exists()){
+            if (file != null && !file.exists()) {
                 file.mkdir()
             }
+        }
+
+        fun extractApk(apk: Apk): Boolean {
+            var extracted: Boolean = true
+            var originalFile: File = File(apk.appInfo.sourceDir)
+            var extractedFile: File = getApkFile(apk)
+
+            try {
+                FileUtils.copyFile(originalFile, extractedFile)
+                extracted = true
+            } catch (e: Exception) {
+                Log.d("test", "problem")
+            }
+
+            return extracted
+        }
+
+        fun getApkFile(apk: Apk): File {
+            var fileName = getAppFolder()?.path + File.separator + apk.appName + "_" + apk.version + ".apk"
+            return File(fileName)
         }
     }
 }

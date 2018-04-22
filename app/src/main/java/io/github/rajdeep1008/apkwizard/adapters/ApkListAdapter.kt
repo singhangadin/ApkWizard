@@ -1,6 +1,7 @@
 package io.github.rajdeep1008.apkwizard.adapters
 
 import android.content.Context
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,8 +12,8 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import io.github.rajdeep1008.apkwizard.R
-import io.github.rajdeep1008.apkwizard.extras.Utilities
 import io.github.rajdeep1008.apkwizard.activities.MainActivity
+import io.github.rajdeep1008.apkwizard.extras.Utilities
 import io.github.rajdeep1008.apkwizard.models.Apk
 import org.jetbrains.anko.find
 
@@ -22,7 +23,7 @@ import org.jetbrains.anko.find
 class ApkListAdapter(var apkList: ArrayList<Apk>, val context: Context) : RecyclerView.Adapter<ApkListAdapter.ApkListViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ApkListViewHolder {
-        return ApkListViewHolder(LayoutInflater.from(context).inflate(R.layout.apk_item, parent, false), context)
+        return ApkListViewHolder(LayoutInflater.from(context).inflate(R.layout.apk_item, parent, false), context, apkList)
     }
 
     override fun getItemCount(): Int {
@@ -35,7 +36,7 @@ class ApkListAdapter(var apkList: ArrayList<Apk>, val context: Context) : Recycl
         holder?.mPackageTextView?.text = apkList.get(position).packageName
     }
 
-    class ApkListViewHolder(view: View, context: Context) : RecyclerView.ViewHolder(view) {
+    class ApkListViewHolder(view: View, context: Context, apkList: ArrayList<Apk>) : RecyclerView.ViewHolder(view) {
 
         val mIconImageView: ImageView
         val mLabelTextView: TextView
@@ -54,11 +55,15 @@ class ApkListAdapter(var apkList: ArrayList<Apk>, val context: Context) : Recycl
             mUninstallBtn = view.find(R.id.uninstall_btn)
             mMenuBtn = view.find(R.id.menu_btn)
 
-            mIconImageView.setOnClickListener { Log.d("test", "Image clicked") }
-            itemView.setOnClickListener { Log.d("test", "Item clicked") }
+            itemView.setOnClickListener {
+                Log.d("apk", apkList.get(adapterPosition).appInfo.sourceDir)
+            }
+
             mExtractBtn.setOnClickListener {
                 if (Utilities.checkPermission(context as MainActivity)) {
-
+                    Utilities.extractApk(apkList.get(adapterPosition))
+                    val rootView: View = (context as MainActivity).window.decorView.findViewById(android.R.id.content)
+                    Snackbar.make(rootView, "${apkList.get(adapterPosition).appName} apk extracted successfully", Snackbar.LENGTH_LONG).show()
                 }
             }
         }
