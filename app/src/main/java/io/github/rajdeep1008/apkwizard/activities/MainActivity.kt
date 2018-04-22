@@ -4,17 +4,18 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
 import io.github.rajdeep1008.apkwizard.R
 import io.github.rajdeep1008.apkwizard.adapters.PagerAdapter
+import io.github.rajdeep1008.apkwizard.extras.Utilities
 import io.github.rajdeep1008.apkwizard.models.Apk
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
@@ -38,9 +39,11 @@ class MainActivity : AppCompatActivity() {
         progressBar = find(R.id.progress)
         mViewPager = find(R.id.container)
         tabLayout = find(R.id.tab_bar)
-        setSupportActionBar(toolbar)
 
-        setupViewPager(userApkList, systemApkList)
+        setSupportActionBar(toolbar)
+        Utilities.checkPermission(this)
+
+        setupViewPager(mutableListOf<Apk>(), mutableListOf<Apk>())
 
         doAsync {
             val allPackages: List<PackageInfo> = packageManager.getInstalledPackages(PackageManager.GET_META_DATA)
@@ -65,12 +68,24 @@ class MainActivity : AppCompatActivity() {
                     systemApkList.add(systemApk)
                 }
 
-                Log.d("test", packageManager.getApplicationLabel(applicationInfo).toString())
+//                Log.d("test", packageManager.getApplicationLabel(applicationInfo).toString())
             }
 
             uiThread {
                 setupViewPager(userApkList, systemApkList)
                 progressBar.visibility = View.GONE
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) {
+            Utilities.STORAGE_PERMISSION_CODE -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    Utilities.makeAppDir()
+                } else {
+                    Snackbar.make(find(android.R.id.content), "Permission required to extract apk", Snackbar.LENGTH_LONG).show()
+                }
             }
         }
     }

@@ -33,7 +33,9 @@
                 android:layout_marginStart="16dp"
                 android:layout_toEndOf="@+id/apk_icon_iv"
                 android:layout_toStartOf="@+id/menu_btn"
+                android:ellipsize="end"
                 android:fontFamily="sans-serif-light"
+                android:maxLines="1"
                 android:text="Dummy Label"
                 android:textColor="@android:color/black"
                 android:textSize="20sp" />
@@ -46,6 +48,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_toEndOf="@+id/apk_icon_iv"
                 android:layout_toStartOf="@+id/menu_btn"
+                android:ellipsize="end"
                 android:fontFamily="sans-serif-thin"
                 android:maxLines="1"
                 android:text="Dummy Package"
@@ -65,30 +68,44 @@
                 android:src="@drawable/menu_btn"
                 android:tint="@color/colorPrimaryDark" />
 
-            <Button
-                android:id="@+id/extract_btn"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:text="Extract"
-                android:textColor="@color/colorPrimary"
-                android:textSize="14sp" />
+                android:orientation="horizontal"
+                android:weightSum="3">
 
-            <Button
-                android:id="@+id/share_btn"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginLeft="4dp"
-                android:layout_marginStart="4dp"
-                android:layout_toEndOf="@+id/extract_btn"
-                android:text="Share Apk"
-                android:textColor="@color/colorPrimary"
-                android:textSize="14sp" />
+                <Button
+                    android:id="@+id/extract_btn"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Extract"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/share_btn"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Share Apk"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/uninstall_btn"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Uninstall"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
 
         </RelativeLayout>
     </android.support.v7.widget.CardView>
