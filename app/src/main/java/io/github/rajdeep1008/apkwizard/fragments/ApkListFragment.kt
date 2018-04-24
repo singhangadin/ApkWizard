@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,8 @@ import org.jetbrains.anko.find
 class ApkListFragment : Fragment() {
 
     private lateinit var apkList: ArrayList<Apk>
+    private lateinit var mAdapter: ApkListAdapter
+    private lateinit var mLinearLayoutManager: LinearLayoutManager
 
     companion object {
         val APK_ARG: String = "apk-list"
@@ -43,12 +46,15 @@ class ApkListFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val rootView: View = inflater.inflate(R.layout.fragment_apk_list, container, false)
         val mRecyclerView: RecyclerView = rootView.find(R.id.apk_list_rv)
-        val mLinearLayoutManager = LinearLayoutManager(activity)
-        val mAdapter = ApkListAdapter(apkList, activity)
+        mLinearLayoutManager = LinearLayoutManager(activity)
+        mAdapter = ApkListAdapter(apkList, activity)
 
         mRecyclerView.layoutManager = mLinearLayoutManager
         mRecyclerView.adapter = mAdapter
         return rootView
     }
 
+    fun updateAdapter() {
+        mAdapter.notifyDataSetChanged()
+    }
 }

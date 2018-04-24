@@ -1,8 +1,10 @@
 package io.github.rajdeep1008.apkwizard.extras
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.net.Uri
 import android.os.Environment
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
@@ -22,6 +24,7 @@ class Utilities {
 
     companion object {
         val STORAGE_PERMISSION_CODE = 1008
+        val UNINSTALL_CODE = 1234
 
         fun checkPermission(activity: AppCompatActivity): Boolean {
             var permissionGranted = false
@@ -67,15 +70,16 @@ class Utilities {
         }
 
         fun extractApk(apk: Apk): Boolean {
+            makeAppDir()
             var extracted: Boolean = true
-            var originalFile: File = File(apk.appInfo.sourceDir)
-            var extractedFile: File = getApkFile(apk)
+            val originalFile: File = File(apk.appInfo.sourceDir)
+            val extractedFile: File = getApkFile(apk)
 
             try {
                 FileUtils.copyFile(originalFile, extractedFile)
                 extracted = true
             } catch (e: Exception) {
-                Log.d("test", "problem")
+                Log.d("test", "problem - " + e.message)
             }
 
             return extracted
@@ -84,6 +88,18 @@ class Utilities {
         fun getApkFile(apk: Apk): File {
             var fileName = getAppFolder()?.path + File.separator + apk.appName + "_" + apk.version + ".apk"
             return File(fileName)
+        }
+
+        fun getShareableIntent(apk: Apk): Intent {
+            extractApk(apk)
+            val file = getApkFile(apk)
+            var shareIntent: Intent = Intent()
+            shareIntent.setAction(Intent.ACTION_SEND)
+            shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file))
+            shareIntent.setType("application/vnd.android.package-archive")
+            shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+            return shareIntent
         }
     }
 }

@@ -1,5 +1,9 @@
 package io.github.rajdeep1008.apkwizard.activities
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
@@ -9,13 +13,14 @@ import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
 import io.github.rajdeep1008.apkwizard.R
 import io.github.rajdeep1008.apkwizard.adapters.PagerAdapter
 import io.github.rajdeep1008.apkwizard.extras.Utilities
+import io.github.rajdeep1008.apkwizard.fragments.ApkListFragment
 import io.github.rajdeep1008.apkwizard.models.Apk
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
@@ -27,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private lateinit var tabLayout: TabLayout
     private lateinit var mViewPager: ViewPager
+    private var broadcastReceiver: BroadcastReceiver? = null
 
     private val userApkList = mutableListOf<Apk>()
     private val systemApkList = mutableListOf<Apk>()
@@ -42,6 +48,12 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
         Utilities.checkPermission(this)
+
+        broadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                updateList()
+            }
+        }
 
         setupViewPager(mutableListOf<Apk>(), mutableListOf<Apk>())
 
@@ -69,8 +81,6 @@ class MainActivity : AppCompatActivity() {
 
                     systemApkList.add(systemApk)
                 }
-
-//                Log.d("test", packageManager.getApplicationLabel(applicationInfo).toString())
             }
 
             uiThread {
@@ -78,6 +88,22 @@ class MainActivity : AppCompatActivity() {
                 progressBar.visibility = View.GONE
             }
         }
+
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED)
+        intentFilter.addAction(Intent.ACTION_PACKAGE_INSTALL)
+        intentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED)
+        intentFilter.addAction(Intent.ACTION_PACKAGE_FULLY_REMOVED)
+        intentFilter.addDataScheme("package");
+        registerReceiver(broadcastReceiver, intentFilter)
+    }
+
+    override fun onDestroy() {
+        if (broadcastReceiver != null) {
+            unregisterReceiver(broadcastReceiver)
+            broadcastReceiver = null
+        }
+        super.onDestroy()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -97,12 +123,13 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return super.onOptionsItemSelected(item)
-    }
-
     fun setupViewPager(userApkList: List<Apk>, systemApkList: List<Apk>) {
         mViewPager.adapter = PagerAdapter(supportFragmentManager, this, userApkList, systemApkList)
         tabLayout.setupWithViewPager(mViewPager)
+    }
+
+    fun updateList() {
+        val fragment: ApkListFragment = mViewPager.adapter.instantiateItem(mViewPager, 0) as ApkListFragment;
+        fragment.updateAdapter()
     }
 }
