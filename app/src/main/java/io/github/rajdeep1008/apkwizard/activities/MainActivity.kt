@@ -8,6 +8,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
@@ -15,6 +16,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
 import io.github.rajdeep1008.apkwizard.R
@@ -85,6 +87,7 @@ class MainActivity : AppCompatActivity() {
 
             uiThread {
                 setupViewPager(userApkList, systemApkList)
+                Utilities.updateSortOrder(this@MainActivity, PreferenceManager.getDefaultSharedPreferences(this@MainActivity).getInt(Utilities.PREF_SORT_KEY, 0))
                 progressBar.visibility = View.GONE
             }
         }
@@ -120,6 +123,24 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.sort_name -> {
+                Utilities.updateSortOrder(this, Utilities.SORT_ORDER_NAME)
+            }
+            R.id.sort_install_date -> {
+                Utilities.updateSortOrder(this, Utilities.SORT_ORDER_INSTALLATION_DATE)
+            }
+            R.id.sort_update_date -> {
+                Utilities.updateSortOrder(this, Utilities.SORT_ORDER_UPDATE_DATE)
+            }
+            R.id.sort_size -> {
+                Utilities.updateSortOrder(this, Utilities.SORT_ORDER_SIZE)
+            }
+        }
         return true
     }
 

@@ -12,6 +12,31 @@
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="2"
-        android:title="Settings"
+        android:title="Sort order"
+        app:showAsAction="never">
+        <menu>
+            <item
+                android:id="@+id/sort_name"
+                android:orderInCategory="100"
+                android:title="Name" />
+            <item
+                android:id="@+id/sort_install_date"
+                android:orderInCategory="200"
+                android:title="Installation date" />
+            <item
+                android:id="@+id/sort_update_date"
+                android:orderInCategory="300"
+                android:title="Update date" />
+            <item
+                android:id="@+id/sort_size"
+                android:orderInCategory="400"
+                android:title="Size" />
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="3"
+        android:title="About"
         app:showAsAction="never" />
 </menu>

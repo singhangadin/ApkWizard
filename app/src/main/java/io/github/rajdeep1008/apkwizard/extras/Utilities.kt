@@ -1,11 +1,13 @@
 package io.github.rajdeep1008.apkwizard.extras
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
 import android.os.Environment
+import android.preference.PreferenceManager
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -23,8 +25,13 @@ import java.io.File
 class Utilities {
 
     companion object {
+
         val STORAGE_PERMISSION_CODE = 1008
-        val UNINSTALL_CODE = 1234
+        val SORT_ORDER_NAME = 0
+        val SORT_ORDER_INSTALLATION_DATE = 1
+        val SORT_ORDER_UPDATE_DATE = 2
+        val SORT_ORDER_SIZE = 3
+        val PREF_SORT_KEY = "sort_order"
 
         fun checkPermission(activity: AppCompatActivity): Boolean {
             var permissionGranted = false
@@ -100,6 +107,11 @@ class Utilities {
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
             return shareIntent
+        }
+
+        fun updateSortOrder(context: Context, option: Int) {
+            val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+            preferences.edit().putInt(PREF_SORT_KEY, option).commit()
         }
     }
 }

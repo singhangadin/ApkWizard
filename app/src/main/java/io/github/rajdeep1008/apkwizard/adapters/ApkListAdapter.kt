@@ -17,6 +17,7 @@ import io.github.rajdeep1008.apkwizard.activities.MainActivity
 import io.github.rajdeep1008.apkwizard.extras.Utilities
 import io.github.rajdeep1008.apkwizard.models.Apk
 import org.jetbrains.anko.find
+import java.util.*
 
 
 /**
@@ -84,5 +85,10 @@ class ApkListAdapter(var apkList: ArrayList<Apk>, val context: Context) : Recycl
                 context.startActivity(uninstallIntent)
             }
         }
+    }
+
+    fun updateData(list: ArrayList<Apk>) {
+        apkList = list
+        notifyDataSetChanged()
     }
 }
