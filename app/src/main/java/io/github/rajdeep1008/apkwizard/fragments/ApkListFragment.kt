@@ -60,7 +60,6 @@ class ApkListFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeLi
         preferences.registerOnSharedPreferenceChangeListener(this)
 
         updateSortingOrder(preferences.getInt(Utilities.PREF_SORT_KEY, 0))
-
         return rootView
     }
 

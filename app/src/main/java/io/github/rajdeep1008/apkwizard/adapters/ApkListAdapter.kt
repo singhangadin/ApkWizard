@@ -1,5 +1,6 @@
 package io.github.rajdeep1008.apkwizard.adapters
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -23,6 +24,11 @@ import java.util.*
 class ApkListAdapter(var apkList: ArrayList<Apk>, val context: Context) : RecyclerView.Adapter<ApkListAdapter.ApkListViewHolder>() {
 
     val mOriginalApkList = apkList
+    var mItemClickListener: OnContextItemClickListener? = null
+
+    init {
+        mItemClickListener = context as MainActivity
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ApkListViewHolder {
         return ApkListViewHolder(LayoutInflater.from(context).inflate(R.layout.apk_item, parent, false), context, apkList)
@@ -39,7 +45,7 @@ class ApkListAdapter(var apkList: ArrayList<Apk>, val context: Context) : Recycl
         if (apkList.get(position).systemApp) holder?.mUninstallBtn?.visibility = View.GONE
     }
 
-    class ApkListViewHolder(view: View, context: Context, apkList: ArrayList<Apk>) : RecyclerView.ViewHolder(view) {
+    inner class ApkListViewHolder(view: View, context: Context, apkList: ArrayList<Apk>) : RecyclerView.ViewHolder(view) {
 
         val mIconImageView: ImageView
         val mLabelTextView: TextView
@@ -57,6 +63,7 @@ class ApkListAdapter(var apkList: ArrayList<Apk>, val context: Context) : Recycl
             mShareBtn = view.find(R.id.share_btn)
             mUninstallBtn = view.find(R.id.uninstall_btn)
             mMenuBtn = view.find(R.id.menu_btn)
+            (context as Activity).registerForContextMenu(mMenuBtn)
 
             itemView.setOnClickListener {
                 //                Log.d("apk", apkList.get(adapterPosition).appInfo.sourceDir)
@@ -82,6 +89,14 @@ class ApkListAdapter(var apkList: ArrayList<Apk>, val context: Context) : Recycl
                 uninstallIntent.setData(Uri.parse("package:" + apkList[adapterPosition].packageName));
                 uninstallIntent.putExtra(Intent.EXTRA_RETURN_RESULT, true)
                 context.startActivity(uninstallIntent)
+            }
+
+            mMenuBtn.setOnClickListener {
+                mItemClickListener?.onItemClicked(apkList.get(adapterPosition).packageName!!)
+                context.openContextMenu(mMenuBtn)
+                mMenuBtn.setOnCreateContextMenuListener { menu, v, menuInfo ->
+                    context.menuInflater.inflate(R.menu.context_menu, menu)
+                }
             }
         }
     }
@@ -119,5 +134,9 @@ class ApkListAdapter(var apkList: ArrayList<Apk>, val context: Context) : Recycl
                 notifyDataSetChanged()
             }
         }
+    }
+
+    interface OnContextItemClickListener {
+        fun onItemClicked(packageName: String)
     }
 }

@@ -1,13 +1,11 @@
 package io.github.rajdeep1008.apkwizard.activities
 
 import android.app.SearchManager
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.design.widget.Snackbar
@@ -30,13 +28,15 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
 import org.jetbrains.anko.uiThread
 
-class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
+class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, ApkListAdapter.OnContextItemClickListener {
 
     private lateinit var toolbar: Toolbar
     private lateinit var progressBar: ProgressBar
     private lateinit var tabLayout: TabLayout
     private lateinit var mViewPager: ViewPager
     private lateinit var searchView: SearchView
+    private lateinit var contextItemPackageName: String
+
     private var broadcastReceiver: BroadcastReceiver? = null
 
     private val userApkList = mutableListOf<Apk>()
@@ -185,5 +185,30 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         } else {
             super.onBackPressed()
         }
+    }
+
+    override fun onContextItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.action_launch -> {
+                try {
+                    startActivity(packageManager.getLaunchIntentForPackage(contextItemPackageName))
+                } catch (e: Exception) {
+                    Snackbar.make(find(android.R.id.content), "Can't open this app", Snackbar.LENGTH_SHORT).show()
+                }
+            }
+            R.id.action_playstore -> {
+                try {
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$contextItemPackageName")))
+                } catch (e: ActivityNotFoundException) {
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$contextItemPackageName")))
+                }
+
+            }
+        }
+        return true
+    }
+
+    override fun onItemClicked(packageName: String) {
+        contextItemPackageName = packageName
     }
 }
