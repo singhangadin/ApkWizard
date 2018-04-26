@@ -25,6 +25,13 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
+        <activity
+            android:name=".activities.AboutActivity"
+            android:parentActivityName=".activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

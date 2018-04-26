@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ApkWizard</string>
+    <string name="repo_url"><a href="https://github.com/rajdeep1008/ApkWizard">Here</a></string>
 </resources>

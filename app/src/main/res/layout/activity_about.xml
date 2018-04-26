@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="io.github.rajdeep1008.apkwizard.activities.AboutActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/AppToolbar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/profile_image"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_below="@+id/toolbar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/profile_pic"
+        app:civ_border_color="#777777"
+        app:civ_border_width="2dp" />
+
+    <TextView
+        android:id="@+id/name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profile_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:fontFamily="roboto-light"
+        android:text="Rajdeep Singh"
+        android:textColor="@android:color/black"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/app_dev_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/name_tv"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="roboto-light"
+        android:text="App developer"
+        android:textSize="18sp" />
+
+    <ImageButton
+        android:id="@+id/github_btn"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_below="@+id/app_dev_tv"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/github_logo" />
+
+    <ImageButton
+        android:id="@+id/medium_btn"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_alignTop="@+id/github_btn"
+        android:layout_below="@+id/app_dev_tv"
+        android:layout_marginRight="32dp"
+        android:layout_toLeftOf="@+id/github_btn"
+        android:background="@android:color/transparent"
+        android:src="@drawable/medium_logo" />
+
+    <ImageButton
+        android:id="@+id/play_btn"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_alignTop="@+id/github_btn"
+        android:layout_below="@+id/app_dev_tv"
+        android:layout_marginLeft="32dp"
+        android:layout_toRightOf="@+id/github_btn"
+        android:background="@android:color/transparent"
+        android:src="@drawable/play_logo" />
+
+    <TextView
+        android:id="@+id/app_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/github_btn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:gravity="center"
+        android:text="Apk wizard is a fast and easy to use\n apk manager for android."
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/open_source_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/app_desc"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:gravity="center"
+        android:text="This app is written purely in Kotlin and is open source ♥"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/code_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/open_source_desc"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:text="Check out the source code "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/source_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/code_desc"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="4dp"
+        android:gravity="center"
+        android:text="@string/repo_url"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/made_with_love"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="roboto-thin" />
+
+</RelativeLayout>
+

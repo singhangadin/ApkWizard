@@ -151,6 +151,9 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, ApkLis
             R.id.sort_size -> {
                 Utilities.updateSortOrder(this, Utilities.SORT_ORDER_SIZE)
             }
+            R.id.action_about -> {
+                startActivity(Intent(this, AboutActivity::class.java))
+            }
         }
         return true
     }
