@@ -8,10 +8,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import io.github.rajdeep1008.apkwizard.R
 import io.github.rajdeep1008.apkwizard.activities.MainActivity
 import io.github.rajdeep1008.apkwizard.extras.Utilities
@@ -24,6 +21,8 @@ import java.util.*
  * Created by rajdeep1008 on 20/04/18.
  */
 class ApkListAdapter(var apkList: ArrayList<Apk>, val context: Context) : RecyclerView.Adapter<ApkListAdapter.ApkListViewHolder>() {
+
+    val mOriginalApkList = apkList
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ApkListViewHolder {
         return ApkListViewHolder(LayoutInflater.from(context).inflate(R.layout.apk_item, parent, false), context, apkList)
@@ -90,5 +89,35 @@ class ApkListAdapter(var apkList: ArrayList<Apk>, val context: Context) : Recycl
     fun updateData(list: ArrayList<Apk>) {
         apkList = list
         notifyDataSetChanged()
+    }
+
+    fun getFilter(): Filter {
+        return object : Filter() {
+
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val filterResults = FilterResults()
+                val results = ArrayList<Apk>()
+
+                if ((constraint != null) and (constraint.toString().isNotEmpty())) {
+                    for (apk in mOriginalApkList) {
+                        if (apk.appName.toLowerCase().contains(constraint.toString()) or apk.packageName?.toLowerCase()?.contains(constraint.toString())!!) {
+                            results.add(apk)
+                        }
+                    }
+
+                    filterResults.values = results
+                    filterResults.count = results.size
+                } else {
+                    filterResults.values = mOriginalApkList
+                    filterResults.count = mOriginalApkList.size
+                }
+                return filterResults
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                apkList = results?.values as ArrayList<Apk>
+                notifyDataSetChanged()
+            }
+        }
     }
 }

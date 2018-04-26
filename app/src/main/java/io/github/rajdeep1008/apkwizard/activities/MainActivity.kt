@@ -1,5 +1,6 @@
 package io.github.rajdeep1008.apkwizard.activities
 
+import android.app.SearchManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -13,13 +14,14 @@ import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
 import io.github.rajdeep1008.apkwizard.R
+import io.github.rajdeep1008.apkwizard.adapters.ApkListAdapter
 import io.github.rajdeep1008.apkwizard.adapters.PagerAdapter
 import io.github.rajdeep1008.apkwizard.extras.Utilities
 import io.github.rajdeep1008.apkwizard.fragments.ApkListFragment
@@ -28,12 +30,13 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
 import org.jetbrains.anko.uiThread
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     private lateinit var toolbar: Toolbar
     private lateinit var progressBar: ProgressBar
     private lateinit var tabLayout: TabLayout
     private lateinit var mViewPager: ViewPager
+    private lateinit var searchView: SearchView
     private var broadcastReceiver: BroadcastReceiver? = null
 
     private val userApkList = mutableListOf<Apk>()
@@ -99,6 +102,7 @@ class MainActivity : AppCompatActivity() {
         intentFilter.addAction(Intent.ACTION_PACKAGE_FULLY_REMOVED)
         intentFilter.addDataScheme("package");
         registerReceiver(broadcastReceiver, intentFilter)
+
     }
 
     override fun onDestroy() {
@@ -123,6 +127,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
+
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        searchView = menu?.findItem(R.id.action_search)?.actionView as SearchView
+
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+        searchView.setOnQueryTextListener(this)
+
         return true
     }
 
@@ -150,7 +161,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun updateList() {
-        val fragment: ApkListFragment = mViewPager.adapter.instantiateItem(mViewPager, 0) as ApkListFragment;
-        fragment.updateAdapter()
+        (mViewPager.adapter.instantiateItem(mViewPager, 0) as ApkListFragment).updateAdapter()
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        if (newText?.isEmpty()!!) {
+            ((mViewPager.adapter.instantiateItem(mViewPager, 0) as ApkListFragment).mRecyclerView.adapter as ApkListAdapter).getFilter().filter("")
+            ((mViewPager.adapter.instantiateItem(mViewPager, 1) as ApkListFragment).mRecyclerView.adapter as ApkListAdapter).getFilter().filter("")
+        } else {
+            ((mViewPager.adapter.instantiateItem(mViewPager, 0) as ApkListFragment).mRecyclerView.adapter as ApkListAdapter).getFilter().filter(newText.toLowerCase())
+            ((mViewPager.adapter.instantiateItem(mViewPager, 1) as ApkListFragment).mRecyclerView.adapter as ApkListAdapter).getFilter().filter(newText.toLowerCase())
+        }
+        return false
+    }
+
+    override fun onBackPressed() {
+        if (!searchView.isIconified) {
+            searchView.isIconified = true
+        } else {
+            super.onBackPressed()
+        }
     }
 }
