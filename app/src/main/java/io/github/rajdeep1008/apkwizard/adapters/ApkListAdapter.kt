@@ -3,14 +3,18 @@ package io.github.rajdeep1008.apkwizard.adapters
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
+import android.os.Build
 import android.support.design.widget.Snackbar
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import io.github.rajdeep1008.apkwizard.R
+import io.github.rajdeep1008.apkwizard.activities.DetailActivity
 import io.github.rajdeep1008.apkwizard.activities.MainActivity
 import io.github.rajdeep1008.apkwizard.extras.Utilities
 import io.github.rajdeep1008.apkwizard.models.Apk
@@ -66,7 +70,16 @@ class ApkListAdapter(var apkList: ArrayList<Apk>, val context: Context) : Recycl
             (context as Activity).registerForContextMenu(mMenuBtn)
 
             itemView.setOnClickListener {
-                //                Log.d("apk", apkList.get(adapterPosition).appInfo.sourceDir)
+                val transitionName = context.resources.getString(R.string.transition)
+                val intent = Intent(context, DetailActivity::class.java)
+                intent.putExtra("apk_info", apkList.get(adapterPosition))
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    val activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(context, mIconImageView, transitionName)
+                    context.startActivity(intent, activityOptions.toBundle())
+                } else {
+                    context.startActivity(intent)
+                }
             }
 
             mExtractBtn.setOnClickListener {
