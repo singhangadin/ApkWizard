@@ -25,7 +25,6 @@ import org.jetbrains.anko.find
 import org.jetbrains.anko.uiThread
 
 class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, ApkListAdapter.OnContextItemClickListener {
-
     private lateinit var searchView: SearchView
     private lateinit var contextItemPackageName: String
 
@@ -144,9 +143,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, ApkLis
         (container.adapter.instantiateItem(container, 0) as ApkListFragment).updateAdapter()
     }
 
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        return true
-    }
+    override fun onQueryTextSubmit(query: String?): Boolean = true
 
     override fun onQueryTextChange(newText: String?): Boolean {
         if (newText?.isEmpty()!!) {

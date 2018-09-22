@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.method.LinkMovementMethod
 import android.view.View
-import io.github.rajdeep1008.apkwizard.R
 import kotlinx.android.synthetic.main.activity_about.*
 
 class AboutActivity : AppCompatActivity(), View.OnClickListener {
@@ -17,8 +16,6 @@ class AboutActivity : AppCompatActivity(), View.OnClickListener {
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        made_with_love.text = "Made with ♥ from India"
 
         play_btn.setOnClickListener(this)
         medium_btn.setOnClickListener(this)
