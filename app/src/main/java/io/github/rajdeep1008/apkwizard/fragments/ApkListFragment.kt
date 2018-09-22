@@ -1,6 +1,5 @@
 package io.github.rajdeep1008.apkwizard.fragments
 
-
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -12,11 +11,10 @@ import io.github.rajdeep1008.apkwizard.R
 import io.github.rajdeep1008.apkwizard.adapters.ApkListAdapter
 import io.github.rajdeep1008.apkwizard.utils.Utilities
 import io.github.rajdeep1008.apkwizard.models.Apk
-import org.jetbrains.anko.find
+import kotlinx.android.synthetic.main.fragment_apk_list.view.*
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
-
 
 class ApkListFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -26,7 +24,7 @@ class ApkListFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeLi
     lateinit var mRecyclerView: RecyclerView
 
     companion object {
-        val APK_ARG: String = "apk-list"
+        const val APK_ARG: String = "apk-list"
 
         fun newInstance(apkList: ArrayList<Apk>): ApkListFragment {
             val fragment = ApkListFragment()
@@ -39,17 +37,16 @@ class ApkListFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeLi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments.getParcelableArrayList<Apk>(APK_ARG) != null) {
-            apkList = arguments.getParcelableArrayList(APK_ARG)
+        apkList = if (arguments.getParcelableArrayList<Apk>(APK_ARG) != null) {
+            arguments.getParcelableArrayList(APK_ARG)
         } else {
-            apkList = ArrayList()
+            ArrayList()
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView: View = inflater.inflate(R.layout.fragment_apk_list, container, false)
-        mRecyclerView = rootView.find(R.id.apk_list_rv)
+        mRecyclerView = rootView.apk_list_rv
         mLinearLayoutManager = LinearLayoutManager(activity)
         mAdapter = ApkListAdapter(apkList, activity)
 
@@ -70,7 +67,6 @@ class ApkListFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeLi
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.main_menu, menu)
-
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
@@ -79,17 +75,15 @@ class ApkListFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeLi
         }
     }
 
-    fun updateAdapter() {
-        mAdapter.notifyDataSetChanged()
-    }
+    fun updateAdapter() = mAdapter.notifyDataSetChanged()
 
-    fun updateSortingOrder(order: Int) {
+    private fun updateSortingOrder(order: Int) {
         val tempList: MutableList<Apk> = apkList.toMutableList()
         when (order) {
             Utilities.SORT_ORDER_NAME -> {
                 tempList.sortWith(Comparator { p1, p2 ->
-                    context.packageManager.getApplicationLabel(p1.appInfo).toString().toLowerCase()
-                            .compareTo(context.packageManager.getApplicationLabel(p2.appInfo).toString().toLowerCase())
+                    p1.appName.toLowerCase()
+                            .compareTo(p2.appName.toLowerCase())
                 })
             }
             Utilities.SORT_ORDER_INSTALLATION_DATE -> {
@@ -106,7 +100,7 @@ class ApkListFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeLi
             }
             Utilities.SORT_ORDER_SIZE -> {
                 tempList.sortWith(Comparator { p1, p2 ->
-                    (File(p2.appInfo.sourceDir).length()).compareTo(File(p1.appInfo.sourceDir).length())
+                    (File(p2.sourceDir).length()).compareTo(File(p1.sourceDir).length())
                 })
             }
         }

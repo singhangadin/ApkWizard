@@ -25,6 +25,7 @@ import org.jetbrains.anko.find
 import org.jetbrains.anko.uiThread
 
 class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, ApkListAdapter.OnContextItemClickListener {
+
     private lateinit var searchView: SearchView
     private lateinit var contextItemPackageName: String
 
@@ -56,16 +57,16 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, ApkLis
 
                 if ((applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0) {
                     val userApk = Apk(
-                            applicationInfo,
                             packageManager.getApplicationLabel(applicationInfo).toString(),
+                            applicationInfo.sourceDir,
                             it.packageName,
                             it.versionName,
                             false)
                     userApkList.add(userApk)
                 } else {
                     val systemApk = Apk(
-                            applicationInfo,
                             packageManager.getApplicationLabel(applicationInfo).toString(),
+                            applicationInfo.sourceDir,
                             it.packageName,
                             it.versionName,
                             true)

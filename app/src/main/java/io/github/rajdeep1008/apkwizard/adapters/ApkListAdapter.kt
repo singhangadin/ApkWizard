@@ -19,12 +19,13 @@ import io.github.rajdeep1008.apkwizard.utils.Utilities
 import io.github.rajdeep1008.apkwizard.models.Apk
 import kotlinx.android.synthetic.main.apk_item.view.*
 import java.util.*
+import android.content.pm.PackageManager
 
 
 /**
  * Created by rajdeep1008 on 20/04/18.
  */
-class ApkListAdapter(var apkList: ArrayList<Apk>, val context: Context) : RecyclerView.Adapter<ApkListAdapter.ApkListViewHolder>() {
+class ApkListAdapter(var apkList: ArrayList<Apk>, private val context: Context) : RecyclerView.Adapter<ApkListAdapter.ApkListViewHolder>() {
 
     val mOriginalApkList = apkList
     var mItemClickListener: OnContextItemClickListener? = null
@@ -40,8 +41,16 @@ class ApkListAdapter(var apkList: ArrayList<Apk>, val context: Context) : Recycl
     override fun getItemCount(): Int = apkList.size
 
     override fun onBindViewHolder(holder: ApkListViewHolder?, position: Int) {
-        holder?.mIconImageView?.setImageDrawable(context.packageManager.getApplicationIcon(apkList[position].appInfo))
-        holder?.mLabelTextView?.text = context.packageManager.getApplicationLabel(apkList[position].appInfo).toString()
+        try {
+            val app = context.packageManager.getApplicationInfo(apkList[position].packageName, 0)
+            val icon = context.packageManager.getApplicationIcon(app)
+            val name = context.packageManager.getApplicationLabel(app)
+
+            holder?.mIconImageView?.setImageDrawable(icon)
+            holder?.mLabelTextView?.text = name
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
         holder?.mPackageTextView?.text = apkList[position].packageName
 
         if (apkList[position].systemApp)
