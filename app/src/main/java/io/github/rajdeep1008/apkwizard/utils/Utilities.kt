@@ -1,4 +1,4 @@
-package io.github.rajdeep1008.apkwizard.extras
+package io.github.rajdeep1008.apkwizard.utils
 
 import android.Manifest
 import android.content.Context
@@ -14,7 +14,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import io.github.rajdeep1008.apkwizard.activities.MainActivity
+import io.github.rajdeep1008.apkwizard.MainActivity
 import io.github.rajdeep1008.apkwizard.models.Apk
 import org.apache.commons.io.FileUtils
 import java.io.File

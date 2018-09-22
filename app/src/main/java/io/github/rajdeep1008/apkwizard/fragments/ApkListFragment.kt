@@ -10,7 +10,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.*
 import io.github.rajdeep1008.apkwizard.R
 import io.github.rajdeep1008.apkwizard.adapters.ApkListAdapter
-import io.github.rajdeep1008.apkwizard.extras.Utilities
+import io.github.rajdeep1008.apkwizard.utils.Utilities
 import io.github.rajdeep1008.apkwizard.models.Apk
 import org.jetbrains.anko.find
 import java.io.File

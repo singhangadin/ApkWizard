@@ -3,7 +3,6 @@ package io.github.rajdeep1008.apkwizard.adapters
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
 import android.support.design.widget.Snackbar
@@ -14,11 +13,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import io.github.rajdeep1008.apkwizard.R
-import io.github.rajdeep1008.apkwizard.activities.DetailActivity
-import io.github.rajdeep1008.apkwizard.activities.MainActivity
-import io.github.rajdeep1008.apkwizard.extras.Utilities
+import io.github.rajdeep1008.apkwizard.DetailActivity
+import io.github.rajdeep1008.apkwizard.MainActivity
+import io.github.rajdeep1008.apkwizard.utils.Utilities
 import io.github.rajdeep1008.apkwizard.models.Apk
-import org.jetbrains.anko.find
+import kotlinx.android.synthetic.main.apk_item.view.*
 import java.util.*
 
 
@@ -38,41 +37,34 @@ class ApkListAdapter(var apkList: ArrayList<Apk>, val context: Context) : Recycl
         return ApkListViewHolder(LayoutInflater.from(context).inflate(R.layout.apk_item, parent, false), context, apkList)
     }
 
-    override fun getItemCount(): Int {
-        return apkList.size
-    }
+    override fun getItemCount(): Int = apkList.size
 
     override fun onBindViewHolder(holder: ApkListViewHolder?, position: Int) {
-        holder?.mIconImageView?.setImageDrawable(context.packageManager.getApplicationIcon(apkList.get(position).appInfo))
-        holder?.mLabelTextView?.text = context.packageManager.getApplicationLabel(apkList.get(position).appInfo).toString()
-        holder?.mPackageTextView?.text = apkList.get(position).packageName
-        if (apkList.get(position).systemApp) holder?.mUninstallBtn?.visibility = View.GONE
+        holder?.mIconImageView?.setImageDrawable(context.packageManager.getApplicationIcon(apkList[position].appInfo))
+        holder?.mLabelTextView?.text = context.packageManager.getApplicationLabel(apkList[position].appInfo).toString()
+        holder?.mPackageTextView?.text = apkList[position].packageName
+
+        if (apkList[position].systemApp)
+            holder?.mUninstallBtn?.visibility = View.GONE
     }
 
     inner class ApkListViewHolder(view: View, context: Context, apkList: ArrayList<Apk>) : RecyclerView.ViewHolder(view) {
+        private val mShareBtn: Button = view.share_btn
+        private val mMenuBtn: ImageButton = view.menu_btn
+        private val mExtractBtn: Button = view.extract_btn
 
-        val mIconImageView: ImageView
-        val mLabelTextView: TextView
-        val mPackageTextView: TextView
-        val mExtractBtn: Button
-        val mShareBtn: Button
-        val mUninstallBtn: Button
-        val mMenuBtn: ImageButton
+        val mIconImageView: ImageView = view.apk_icon_iv
+        val mLabelTextView: TextView = view.apk_label_tv
+        val mPackageTextView: TextView = view.apk_package_tv
+        val mUninstallBtn: Button = view.uninstall_btn
 
         init {
-            mIconImageView = view.find(R.id.apk_icon_iv)
-            mLabelTextView = view.find(R.id.apk_label_tv)
-            mPackageTextView = view.find(R.id.apk_package_tv)
-            mExtractBtn = view.find(R.id.extract_btn)
-            mShareBtn = view.find(R.id.share_btn)
-            mUninstallBtn = view.find(R.id.uninstall_btn)
-            mMenuBtn = view.find(R.id.menu_btn)
             (context as Activity).registerForContextMenu(mMenuBtn)
 
             itemView.setOnClickListener {
                 val transitionName = context.resources.getString(R.string.transition)
                 val intent = Intent(context, DetailActivity::class.java)
-                intent.putExtra("apk_info", apkList.get(adapterPosition))
+                intent.putExtra("apk_info", apkList[adapterPosition])
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     val activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(context, mIconImageView, transitionName)
@@ -84,30 +76,30 @@ class ApkListAdapter(var apkList: ArrayList<Apk>, val context: Context) : Recycl
 
             mExtractBtn.setOnClickListener {
                 if (Utilities.checkPermission(context as MainActivity)) {
-                    Utilities.extractApk(apkList.get(adapterPosition))
-                    val rootView: View = (context as MainActivity).window.decorView.findViewById(android.R.id.content)
-                    Snackbar.make(rootView, "${apkList.get(adapterPosition).appName} apk extracted successfully", Snackbar.LENGTH_LONG).show()
+                    Utilities.extractApk(apkList[adapterPosition])
+                    val rootView: View = (context).window.decorView.findViewById(android.R.id.content)
+                    Snackbar.make(rootView, "${apkList[adapterPosition].appName} apk extracted successfully", Snackbar.LENGTH_LONG).show()
                 }
             }
 
             mShareBtn.setOnClickListener {
                 if (Utilities.checkPermission(context as MainActivity)) {
-                    val intent = Utilities.getShareableIntent(apkList.get(adapterPosition))
+                    val intent = Utilities.getShareableIntent(apkList[adapterPosition])
                     context.startActivity(Intent.createChooser(intent, "Share the apk using"))
                 }
             }
 
             mUninstallBtn.setOnClickListener {
                 val uninstallIntent = Intent(Intent.ACTION_UNINSTALL_PACKAGE)
-                uninstallIntent.setData(Uri.parse("package:" + apkList[adapterPosition].packageName));
+                uninstallIntent.data = Uri.parse("package:" + apkList[adapterPosition].packageName)
                 uninstallIntent.putExtra(Intent.EXTRA_RETURN_RESULT, true)
                 context.startActivity(uninstallIntent)
             }
 
             mMenuBtn.setOnClickListener {
-                mItemClickListener?.onItemClicked(apkList.get(adapterPosition).packageName!!)
+                mItemClickListener?.onItemClicked(apkList[adapterPosition].packageName!!)
                 context.openContextMenu(mMenuBtn)
-                mMenuBtn.setOnCreateContextMenuListener { menu, v, menuInfo ->
+                mMenuBtn.setOnCreateContextMenuListener { menu, _, _ ->
                     context.menuInflater.inflate(R.menu.context_menu, menu)
                 }
             }

@@ -1,6 +1,5 @@
 package io.github.rajdeep1008.apkwizard.adapters
 
-import android.content.Context
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
@@ -10,33 +9,22 @@ import io.github.rajdeep1008.apkwizard.models.Apk
 /**
  * Created by rajdeep1008 on 05/03/18.
  */
-class PagerAdapter(fm: FragmentManager, private val context: Context, val userApkList: List<Apk>, val systemApkList: List<Apk>) : FragmentStatePagerAdapter(fm) {
+class PagerAdapter(fm: FragmentManager, userApkList: List<Apk>, systemApkList: List<Apk>) : FragmentStatePagerAdapter(fm) {
 
-    val tabNames = arrayOf("Installed", "System", "Extracted")
-    var mContext: Context
-    var mUserApkList: List<Apk>
-    var mSystemApkList: List<Apk>
-
-    init {
-        mContext = context
-        mUserApkList = userApkList
-        mSystemApkList = systemApkList
-    }
+    private val tabNames = arrayOf("Installed", "System", "Extracted")
+    var mUserApkList: List<Apk> = userApkList
+    var mSystemApkList: List<Apk> = systemApkList
 
     override fun getItem(position: Int): Fragment {
-        when (position) {
-            0 -> return ApkListFragment.newInstance(mUserApkList as ArrayList<Apk>)
-            1 -> return ApkListFragment.newInstance(mSystemApkList as ArrayList<Apk>)
-            2 -> return ApkListFragment.newInstance(ArrayList<Apk>())
+        return when (position) {
+            0 -> ApkListFragment.newInstance(mUserApkList as ArrayList<Apk>)
+            1 -> ApkListFragment.newInstance(mSystemApkList as ArrayList<Apk>)
+            2 -> ApkListFragment.newInstance(ArrayList())
+            else -> ApkListFragment()
         }
-        return ApkListFragment()
     }
 
-    override fun getCount(): Int {
-        return 3
-    }
+    override fun getCount(): Int = 3
 
-    override fun getPageTitle(position: Int): CharSequence? {
-        return tabNames[position]
-    }
+    override fun getPageTitle(position: Int): CharSequence? = tabNames[position]
 }
