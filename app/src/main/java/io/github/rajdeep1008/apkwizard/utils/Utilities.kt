@@ -1,4 +1,4 @@
-package io.github.rajdeep1008.apkwizard.extras
+package io.github.rajdeep1008.apkwizard.utils
 
 import android.Manifest
 import android.content.Context
@@ -14,7 +14,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import io.github.rajdeep1008.apkwizard.activities.MainActivity
+import io.github.rajdeep1008.apkwizard.MainActivity
 import io.github.rajdeep1008.apkwizard.models.Apk
 import org.apache.commons.io.FileUtils
 import java.io.File
@@ -26,24 +26,23 @@ class Utilities {
 
     companion object {
 
-        val STORAGE_PERMISSION_CODE = 1008
-        val SORT_ORDER_NAME = 0
-        val SORT_ORDER_INSTALLATION_DATE = 1
-        val SORT_ORDER_UPDATE_DATE = 2
-        val SORT_ORDER_SIZE = 3
-        val PREF_SORT_KEY = "sort_order"
+        const val SORT_ORDER_INSTALLATION_DATE = 1
+        const val STORAGE_PERMISSION_CODE = 1008
+        const val PREF_SORT_KEY = "sort_order"
+        const val SORT_ORDER_UPDATE_DATE = 2
+        const val SORT_ORDER_NAME = 0
+        const val SORT_ORDER_SIZE = 3
 
         fun checkPermission(activity: AppCompatActivity): Boolean {
             var permissionGranted = false
 
             if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                     val rootView: View = (activity as MainActivity).window.decorView.findViewById(android.R.id.content)
                     Snackbar.make(rootView, "Storage permission required", Snackbar.LENGTH_LONG)
-                            .setAction("Allow", {
+                            .setAction("Allow") {
                                 ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION_CODE)
-                            })
+                            }
                             .setActionTextColor(Color.WHITE)
                             .show()
                 } else {
@@ -56,11 +55,9 @@ class Utilities {
             return permissionGranted
         }
 
-        fun checkExternalStorage(): Boolean {
-            return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)
-        }
+        private fun checkExternalStorage(): Boolean = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)
 
-        fun getAppFolder(): File? {
+        private fun getAppFolder(): File? {
             var file: File? = null
             if (checkExternalStorage()) {
                 file = File(Environment.getExternalStorageDirectory(), "ApkWizard")
@@ -78,8 +75,8 @@ class Utilities {
 
         fun extractApk(apk: Apk): Boolean {
             makeAppDir()
-            var extracted: Boolean = true
-            val originalFile: File = File(apk.appInfo.sourceDir)
+            var extracted = true
+            val originalFile = File(apk.sourceDir)
             val extractedFile: File = getApkFile(apk)
 
             try {
@@ -92,18 +89,18 @@ class Utilities {
             return extracted
         }
 
-        fun getApkFile(apk: Apk): File {
-            var fileName = getAppFolder()?.path + File.separator + apk.appName + "_" + apk.version + ".apk"
+        private fun getApkFile(apk: Apk): File {
+            val fileName = getAppFolder()?.path + File.separator + apk.appName + "_" + apk.version + ".apk"
             return File(fileName)
         }
 
         fun getShareableIntent(apk: Apk): Intent {
             extractApk(apk)
             val file = getApkFile(apk)
-            var shareIntent: Intent = Intent()
-            shareIntent.setAction(Intent.ACTION_SEND)
+            val shareIntent = Intent()
+            shareIntent.action = Intent.ACTION_SEND
             shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file))
-            shareIntent.setType("application/vnd.android.package-archive")
+            shareIntent.type = "application/vnd.android.package-archive"
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
             return shareIntent
@@ -111,7 +108,7 @@ class Utilities {
 
         fun updateSortOrder(context: Context, option: Int) {
             val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-            preferences.edit().putInt(PREF_SORT_KEY, option).commit()
+            preferences.edit().putInt(PREF_SORT_KEY, option).apply()
         }
     }
 }

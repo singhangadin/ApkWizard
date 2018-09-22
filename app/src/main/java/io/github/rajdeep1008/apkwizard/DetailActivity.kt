@@ -1,11 +1,12 @@
-package io.github.rajdeep1008.apkwizard.activities
+package io.github.rajdeep1008.apkwizard
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.widget.ImageView
+
 import io.github.rajdeep1008.apkwizard.R
 import io.github.rajdeep1008.apkwizard.models.Apk
-import org.jetbrains.anko.find
+import kotlinx.android.synthetic.main.activity_detail.*
 
 class DetailActivity : AppCompatActivity() {
 
@@ -14,6 +15,11 @@ class DetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_detail)
 
         val apk = intent.extras.get("apk_info") as Apk
-        (find(R.id.icon_iv) as ImageView).setImageDrawable(packageManager.getApplicationIcon(apk.appInfo))
+        try {
+            val app = packageManager.getApplicationInfo(apk.packageName, 0)
+            icon_iv.setImageDrawable(packageManager.getApplicationIcon(app))
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
     }
 }
